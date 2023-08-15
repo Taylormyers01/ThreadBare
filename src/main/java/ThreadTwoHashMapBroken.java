@@ -1,8 +1,11 @@
+import java.sql.SQLOutput;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadTwoHashMapBroken extends Thread {
     HashMap<String, Thread> threadMap;
+    ReentrantLock lock = new ReentrantLock();
 
     public ThreadTwoHashMapBroken(String name) {
         super(name);
@@ -46,6 +49,8 @@ public class ThreadTwoHashMapBroken extends Thread {
     }
 
     private void runMapOfSize(int size) {
+        System.out.println("Locking this Thread...");
+        lock.lock();
         System.out.println("Constructing HashMap of Size "+size);
         Integer threadCount = size;
 
@@ -58,5 +63,7 @@ public class ThreadTwoHashMapBroken extends Thread {
             this.threadMap.get(name).start();
         }
         System.out.println("Thread HashMap, all have been started");
+        System.out.println("Unlocking thread...");
+        lock.unlock();
     }
 }
